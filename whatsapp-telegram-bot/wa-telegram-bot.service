@@ -1,0 +1,36 @@
+[Unit]
+Description=WhatsApp Telegram Bot
+Documentation=https://github.com/username/whatsapp-telegram-bot
+After=network.target
+
+[Service]
+Environment=NODE_ENV=production
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/whatsapp-telegram-bot
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=10
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutSec=60
+
+# Resource limits for low-spec VPS
+MemoryLimit=512M
+CPUQuota=80%
+
+# Security settings
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/www/whatsapp-telegram-bot/sessions
+ReadWritePaths=/var/www/whatsapp-telegram-bot/logs
+ReadWritePaths=/var/www/whatsapp-telegram-bot/cache
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=wa-telegram-bot
+
+[Install]
+WantedBy=multi-user.target

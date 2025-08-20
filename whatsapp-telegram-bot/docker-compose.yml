@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - CACHE_TYPE=redis
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./sessions:/app/sessions
+      - ./logs:/app/logs
+      - ./cache:/app/cache
+    depends_on:
+      - redis
+    restart: unless-stopped
+    networks:
+      - wa-bot-network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - wa-bot-network
+    command: redis-server --appendonly yes
+
+volumes:
+  redis_data:
+
+networks:
+  wa-bot-network:
+    driver: bridge
